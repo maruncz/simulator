@@ -4,6 +4,7 @@
 #include "base.h"
 #include <algorithm>
 #include <array>
+#include <iostream>
 
 template<real T, uint8_t rows, uint8_t cols> struct mat
 {
@@ -110,6 +111,29 @@ template<real T, uint8_t rows, uint8_t cols> struct mat
             }
         }
         return out;
+    }
+
+    friend std::ostream &operator<<(std::ostream &output, const mat &in)
+    {
+        output << '[';
+        for (int r = 0; r < rows; ++r)
+        {
+            for (int c = 0; c < cols; ++c)
+            {
+                output << in.data[r][c];
+                if (c < (cols - 1))
+                {
+                    output << ' ';
+                }
+            }
+            if (r < (rows - 1))
+            {
+                output << ';';
+            }
+        }
+        output << ']';
+
+        return output;
     }
 
     data_type data;

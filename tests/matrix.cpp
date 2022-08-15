@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 #include <limits>
 #include <random>
+#include <sstream>
 
 TEST(matrix, ctor_empty)
 {
@@ -206,5 +207,31 @@ TEST(matrix, multiply_gen)
                 ASSERT_NEAR(i, 0, err);
             }
         }
+    }
+}
+
+TEST(matrix, print)
+{
+    constexpr float err{10e-10};
+    mat<float, 3, 3> A({{{{1, 2, 3}}, {{4, 5, 6}}, {{7, 8, 9}}}});
+    auto B = mat<float, 1, 3>::row({1, 2, 3});
+    auto C = mat<float, 3, 1>::col({1, 2, 3});
+
+    {
+        std::stringstream Astr;
+        Astr << A;
+        EXPECT_EQ(Astr.str(), "[1 2 3;4 5 6;7 8 9]");
+    }
+
+    {
+        std::stringstream Bstr;
+        Bstr << B;
+        EXPECT_EQ(Bstr.str(), "[1 2 3]");
+    }
+
+    {
+        std::stringstream Cstr;
+        Cstr << C;
+        EXPECT_EQ(Cstr.str(), "[1;2;3]");
     }
 }
