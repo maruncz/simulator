@@ -13,6 +13,9 @@ class base
 {
 public:
     virtual void update(T timepoint) = 0;
+
+protected:
+    T last_time{T(-1)};
 };
 
 template<real T, uint8_t len> struct sample

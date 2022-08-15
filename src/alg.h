@@ -86,6 +86,19 @@ template<real T, uint8_t rows, uint8_t cols> struct mat
         return out;
     }
 
+    mat operator+(mat o) const
+    {
+        mat out;
+        for (int r = 0; r < rows; ++r)
+        {
+            for (int c = 0; c < cols; ++c)
+            {
+                out.data[r][c] = data[r][c] + o.data[r][c];
+            }
+        }
+        return out;
+    }
+
     mat operator-(mat o) const
     {
         mat out;
