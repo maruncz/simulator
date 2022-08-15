@@ -9,13 +9,15 @@
 #include <numeric>
 #include <type_traits>
 
-template<real T, uint8_t num_size, uint8_t den_size> class TF_SISO : public base<T>
+template<real T, uint8_t num_size, uint8_t den_size>
+class TF_SISO : public base<T>
 {
     static_assert(num_size > 0);
     static_assert(den_size > 0);
 
 public:
-    TF_SISO(T t_samp, std::array<T, num_size> t_num, std::array<T, den_size> t_den)
+    TF_SISO(T t_samp, std::array<T, num_size> t_num,
+            std::array<T, den_size> t_den)
         : num(t_num), den(t_den), sampling_period(t_samp)
     {
         u.fill(T(0));

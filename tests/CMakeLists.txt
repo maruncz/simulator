@@ -6,3 +6,6 @@ FetchContent_Declare(googletest
 
 FetchContent_MakeAvailable(
         googletest)
+
+add_executable(test matrix.cpp)
+target_link_libraries(test PRIVATE gtest_main sim)
