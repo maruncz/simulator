@@ -7,7 +7,7 @@
 
 TEST(matrix, ctor_empty)
 {
-    mat<float, 5, 6> tmp;
+    simulator::algebra::mat<float, 5, 6> tmp;
     for (const auto &e : tmp.data)
     {
         for (auto i : e)
@@ -19,7 +19,8 @@ TEST(matrix, ctor_empty)
 
 TEST(matrix, ctor)
 {
-    mat<float, 3, 3> A({{{{1, 1, 1}}, {{0, 0, 0}}, {{0, 0, 0}}}});
+    simulator::algebra::mat<float, 3, 3> A(
+        {{{{1, 1, 1}}, {{0, 0, 0}}, {{0, 0, 0}}}});
     for (auto i : A.data[0])
     {
         ASSERT_NEAR(i, 1, 10e-10);
@@ -28,7 +29,7 @@ TEST(matrix, ctor)
 
 TEST(matrix, iterate)
 {
-    mat<float, 2, 3> A({{{{1, 1, 1}}, {{0, 0, 0}}}});
+    simulator::algebra::mat<float, 2, 3> A({{{{1, 1, 1}}, {{0, 0, 0}}}});
     for (int r = 0; r < 2; ++r)
     {
         for (int c = 0; c < 3; ++c)
@@ -48,7 +49,7 @@ TEST(matrix, iterate)
 TEST(matrix, factory_eye)
 {
     constexpr uint8_t size{4};
-    auto tmp = mat<float, size, size>::eye();
+    auto tmp = simulator::algebra::mat<float, size, size>::eye();
     for (int r = 0; r < size; ++r)
     {
         for (int c = 0; c < size; ++c)
@@ -70,7 +71,8 @@ TEST(matrix, factory_eye)
 TEST(matrix, transpose)
 {
     {
-        mat<float, 3, 3> A({{{{1, 2, 3}}, {{4, 5, 6}}, {{7, 8, 9}}}});
+        simulator::algebra::mat<float, 3, 3> A(
+            {{{{1, 2, 3}}, {{4, 5, 6}}, {{7, 8, 9}}}});
         auto B = A.transpose();
         for (int r = 0; r < 3; ++r)
         {
@@ -81,7 +83,7 @@ TEST(matrix, transpose)
         }
     }
     {
-        mat<float, 2, 3> A({{{{1, 2, 3}}, {{4, 5, 6}}}});
+        simulator::algebra::mat<float, 2, 3> A({{{{1, 2, 3}}, {{4, 5, 6}}}});
         auto B = A.transpose();
         for (int r = 0; r < 2; ++r)
         {
@@ -96,14 +98,14 @@ TEST(matrix, transpose)
 TEST(matrix, multiply_by_eye)
 {
     constexpr uint8_t size{4};
-    auto eye = mat<float, size, size>::eye();
+    auto eye = simulator::algebra::mat<float, size, size>::eye();
 
     std::default_random_engine generator;
     std::uniform_real_distribution<float> dist(-100.0f, 100.0f);
 
     for (int s = 0; s < 1000; ++s)
     {
-        mat<float, size, size> tmp;
+        simulator::algebra::mat<float, size, size> tmp;
         for (int r = 0; r < size; ++r)
         {
             for (int c = 0; c < size; ++c)
@@ -130,11 +132,13 @@ TEST(matrix, multiply_square)
     constexpr uint8_t size{3};
     constexpr float err{10e-10};
     {
-        mat<float, size, size> A({{{{1, 2, 3}}, {{4, 5, 6}}, {{7, 8, 9}}}});
-        mat<float, size, size> B({{{{7, 8, 9}}, {{4, 5, 6}}, {{1, 2, 3}}}});
-        mat<float, size, size> C(
+        simulator::algebra::mat<float, size, size> A(
+            {{{{1, 2, 3}}, {{4, 5, 6}}, {{7, 8, 9}}}});
+        simulator::algebra::mat<float, size, size> B(
+            {{{{7, 8, 9}}, {{4, 5, 6}}, {{1, 2, 3}}}});
+        simulator::algebra::mat<float, size, size> C(
             {{{{18, 24, 30}}, {{54, 69, 84}}, {{90, 114, 138}}}});
-        mat<float, size, size> D(
+        simulator::algebra::mat<float, size, size> D(
             {{{{102, 126, 150}}, {{66, 81, 96}}, {{30, 36, 42}}}});
 
         {
@@ -161,9 +165,12 @@ TEST(matrix, multiply_square)
         }
     }
     {
-        mat<float, size, size> A({{{{1, 1, 1}}, {{0, 0, 0}}, {{0, 0, 0}}}});
-        mat<float, size, size> B({{{{0, 1, 0}}, {{0, 1, 0}}, {{0, 1, 0}}}});
-        mat<float, size, size> C({{{{0, 3, 0}}, {{0, 0, 0}}, {{0, 0, 0}}}});
+        simulator::algebra::mat<float, size, size> A(
+            {{{{1, 1, 1}}, {{0, 0, 0}}, {{0, 0, 0}}}});
+        simulator::algebra::mat<float, size, size> B(
+            {{{{0, 1, 0}}, {{0, 1, 0}}, {{0, 1, 0}}}});
+        simulator::algebra::mat<float, size, size> C(
+            {{{{0, 3, 0}}, {{0, 0, 0}}, {{0, 0, 0}}}});
         {
             auto res  = A * B;
             auto diff = C - res;
@@ -181,10 +188,11 @@ TEST(matrix, multiply_square)
 TEST(matrix, multiply_gen)
 {
     constexpr float err{10e-10};
-    mat<float, 3, 3> A({{{{1, 2, 3}}, {{4, 5, 6}}, {{7, 8, 9}}}});
-    auto B = mat<float, 1, 3>::row({1, 2, 3});
-    auto C = mat<float, 1, 3>::row({30, 36, 42});
-    auto D = mat<float, 3, 1>::col({14, 32, 50});
+    simulator::algebra::mat<float, 3, 3> A(
+        {{{{1, 2, 3}}, {{4, 5, 6}}, {{7, 8, 9}}}});
+    auto B = simulator::algebra::mat<float, 1, 3>::row({1, 2, 3});
+    auto C = simulator::algebra::mat<float, 1, 3>::row({30, 36, 42});
+    auto D = simulator::algebra::mat<float, 3, 1>::col({14, 32, 50});
 
     {
         auto res  = B * A;
@@ -213,9 +221,10 @@ TEST(matrix, multiply_gen)
 TEST(matrix, print)
 {
     constexpr float err{10e-10};
-    mat<float, 3, 3> A({{{{1, 2, 3}}, {{4, 5, 6}}, {{7, 8, 9}}}});
-    auto B = mat<float, 1, 3>::row({1, 2, 3});
-    auto C = mat<float, 3, 1>::col({1, 2, 3});
+    simulator::algebra::mat<float, 3, 3> A(
+        {{{{1, 2, 3}}, {{4, 5, 6}}, {{7, 8, 9}}}});
+    auto B = simulator::algebra::mat<float, 1, 3>::row({1, 2, 3});
+    auto C = simulator::algebra::mat<float, 3, 1>::col({1, 2, 3});
 
     {
         std::stringstream Astr;
@@ -233,5 +242,26 @@ TEST(matrix, print)
         std::stringstream Cstr;
         Cstr << C;
         EXPECT_EQ(Cstr.str(), "[1;2;3]");
+    }
+}
+
+TEST(matrix, norm)
+{
+    constexpr float err{10e-10};
+    simulator::algebra::mat<float, 3, 3> A(
+        {{{{1, 2, 3}}, {{4, 5, 6}}, {{7, 8, 9}}}});
+    auto B = simulator::algebra::mat<float, 1, 3>::row({1, 2, 3});
+    auto C = simulator::algebra::mat<float, 3, 1>::col({1, 2, 3});
+
+    {
+        EXPECT_NEAR(A.norm(), 16.84810335261421, err);
+    }
+
+    {
+        EXPECT_NEAR(B.norm(), 3.741657386773941, err);
+    }
+
+    {
+        EXPECT_NEAR(C.norm(), 3.741657386773941, err);
     }
 }

@@ -6,10 +6,13 @@
 #include <cstdint>
 #include <type_traits>
 
-template<typename T> concept real = std::is_floating_point<T>::value;
+namespace simulator
+{
 
-template<real T>
-class base
+template<typename T>
+concept real = std::is_floating_point<T>::value;
+
+template<real T> class base
 {
 public:
     virtual void update(T timepoint) = 0;
@@ -23,5 +26,7 @@ template<real T, uint8_t len> struct sample
     T timepoint{T(0)};
     std::array<T, len> sample;
 };
+
+} // namespace simulator
 
 #endif // BASE_H

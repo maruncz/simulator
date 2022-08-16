@@ -4,7 +4,14 @@
 #include "base.h"
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <iostream>
+
+namespace simulator
+{
+
+namespace algebra
+{
 
 template<real T, uint8_t rows, uint8_t cols> struct mat
 {
@@ -113,6 +120,19 @@ template<real T, uint8_t rows, uint8_t cols> struct mat
         return out;
     }
 
+    T norm() const
+    {
+        T out{0};
+        for (int r = 0; r < rows; ++r)
+        {
+            for (int c = 0; c < cols; ++c)
+            {
+                out += data[r][c] * data[r][c];
+            }
+        }
+        return std::sqrt(out);
+    }
+
     friend std::ostream &operator<<(std::ostream &output, const mat &in)
     {
         output << '[';
@@ -138,5 +158,9 @@ template<real T, uint8_t rows, uint8_t cols> struct mat
 
     data_type data;
 };
+
+} // namespace algebra
+
+} // namespace simulator
 
 #endif // ALG_H

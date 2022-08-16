@@ -10,6 +10,15 @@
 #include <numeric>
 #include <type_traits>
 
+namespace simulator
+{
+
+namespace discrete
+{
+
+namespace lti
+{
+
 template<real T, uint8_t num_size, uint8_t den_size>
 class TF_SISO : public base<T>
 {
@@ -70,13 +79,14 @@ class SYS : public base<T>
     static_assert(outputs > 0);
 
 public:
-    SYS(T t_samp, const mat<T, states, states> &iA,
-        const mat<T, states, inputs> &iB, const mat<T, outputs, states> &iC)
+    SYS(T t_samp, const algebra::mat<T, states, states> &iA,
+        const algebra::mat<T, states, inputs> &iB,
+        const algebra::mat<T, outputs, states> &iC)
         : sampling_period(t_samp), A(iA), B(iB), C(iC)
     {
     }
 
-    void set_input(const mat<T, inputs, 1> &in) { u = in; }
+    void set_input(const algebra::mat<T, inputs, 1> &in) { u = in; }
 
     void update(T timepoint) override
     {
@@ -94,15 +104,21 @@ public:
     auto get_output() const { return y; }
 
 private:
-    const mat<T, states, states> A;
-    const mat<T, states, inputs> B;
-    const mat<T, outputs, states> C;
+    const algebra::mat<T, states, states> A;
+    const algebra::mat<T, states, inputs> B;
+    const algebra::mat<T, outputs, states> C;
 
-    mat<T, inputs, 1> u;
-    mat<T, states, 1> x;
-    mat<T, outputs, 1> y;
+    algebra::mat<T, inputs, 1> u;
+    algebra::mat<T, states, 1> x;
+    algebra::mat<T, outputs, 1> y;
 
     const T sampling_period;
 };
+
+} // namespace lti
+
+} // namespace discrete
+
+} // namespace simulator
 
 #endif // LTI_H

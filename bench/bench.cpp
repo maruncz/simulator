@@ -6,8 +6,8 @@ static void iterate_algo_unseq(benchmark::State &state)
 {
     for (auto _ : state)
     {
-        TF_SISO<float, 4, 4> lti(1.0f, {0, 0, 0, 0.125f},
-                                 {1, -1.5f, 0.75f, -0.125f});
+        simulator::discrete::lti::TF_SISO<float, 4, 4> lti(
+            1.0f, {0, 0, 0, 0.125f}, {1, -1.5f, 0.75f, -0.125f});
         for (int i = 0; i < 10; ++i)
         {
             lti.set_input(1.0f);
@@ -22,8 +22,9 @@ BENCHMARK(iterate_algo_unseq);
 
 static void pid(benchmark::State &state)
 {
-    PID<double> pid(PID<double>::additive{}, 1, 2, 0.4739336492890995,
-                    0.04978706836786394, 1.135145158787298, 1, 0.01, 100, -100);
+    simulator::discrete::PID<double> pid(
+        simulator::discrete::PID<double>::additive{}, 1, 2, 0.4739336492890995, 0.04978706836786394,
+        1.135145158787298, 1, 0.01, 100, -100);
     double prevU{0};
     for (auto _ : state)
     {
@@ -40,9 +41,9 @@ BENCHMARK(pid);
 
 static void pid_const(benchmark::State &state)
 {
-    PID_const<double> pid(PID_const<double>::additive{}, 1, 2,
-                          0.4739336492890995, 0.04978706836786394,
-                          1.135145158787298, 1, 0.01, 100, -100);
+    simulator::discrete::PID_const<double> pid(
+        simulator::discrete::PID_const<double>::additive{}, 1, 2, 0.4739336492890995,
+        0.04978706836786394, 1.135145158787298, 1, 0.01, 100, -100);
     double prevU{0};
     for (auto _ : state)
     {

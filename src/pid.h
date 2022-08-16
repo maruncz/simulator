@@ -1,11 +1,16 @@
 #ifndef PID_H
 #define PID_H
 
-#include <cmath>
 #include "base.h"
+#include <cmath>
 
-template<real T>
-class PID
+namespace simulator
+{
+
+namespace discrete
+{
+
+template<real T> class PID
 {
 public:
     struct additive
@@ -84,7 +89,7 @@ private:
 
 template<typename T>
 requires std::is_floating_point_v<T>
-    class PID_const
+class PID_const
 {
 public:
     struct additive
@@ -97,8 +102,8 @@ public:
     using value_type = T;
 
     PID_const(multiplicative, T beta, T N, T K, T Ts, T Ti, T Td, T Ks, T satUp,
-        T satDown)
-    : beta(beta), Ts(Ts), Ks(Ks), satUp(satUp), satDown(satDown)
+              T satDown)
+        : beta(beta), Ts(Ts), Ks(Ks), satUp(satUp), satDown(satDown)
     {
         Kp  = K;
         Ki  = Ts * K / Ti;
@@ -107,9 +112,9 @@ public:
     }
 
     PID_const(additive, T beta, T Kp, T Ki, T Kdf, T Kd, T Ks, T Ts, T satUp,
-        T satDown)
-    : beta(beta), Kp(Kp), Ki(Ki), Kdf(Kdf), Kd(Kd), Ks(Ks), Ts(Ts),
-    satUp(satUp), satDown(satDown)
+              T satDown)
+        : beta(beta), Kp(Kp), Ki(Ki), Kdf(Kdf), Kd(Kd), Ks(Ks), Ts(Ts),
+          satUp(satUp), satDown(satDown)
     {
     }
 
@@ -160,5 +165,9 @@ private:
     const T satUp;
     const T satDown;
 };
+
+} // namespace discrete
+
+} // namespace simulator
 
 #endif // PID_H
