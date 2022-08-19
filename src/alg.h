@@ -6,6 +6,7 @@
 #include <array>
 #include <cassert>
 #include <cmath>
+#include <execution>
 #include <iostream>
 
 namespace simulator
@@ -84,27 +85,13 @@ public:
 
     mat operator+(const mat &o) const
     {
-        mat out;
-        for (int r = 0; r < rows; ++r)
-        {
-            for (int c = 0; c < cols; ++c)
-            {
-                out.at(r, c) = at(r, c) + o.at(r, c);
-            }
-        }
+        mat out = elementWiseBinaryOpLoop(o, std::plus<>{});
         return out;
     }
 
     mat operator-(const mat &o) const
     {
-        mat out;
-        for (int r = 0; r < rows; ++r)
-        {
-            for (int c = 0; c < cols; ++c)
-            {
-                out.at(r, c) = at(r, c) - o.at(r, c);
-            }
-        }
+        mat out = elementWiseBinaryOpLoop(o, std::minus<>{});
         return out;
     }
 
@@ -156,7 +143,30 @@ public:
         return const_cast<T &>(const_cast<const mat *>(this)->at(row, col));
     }
 
+    template<typename binaryOp>
+    mat elementWiseBinaryOpAlg(const mat &o, binaryOp op) const
+    {
+        mat out;
+        std::transform(std::execution::unseq, data.begin(), data.end(),
+                       o.data.begin(), out.data.begin(), op);
+        return out;
+    }
+
 private:
+    template<typename binaryOp>
+    mat elementWiseBinaryOpLoop(const mat &o, binaryOp op) const
+    {
+        mat out;
+        for (int r = 0; r < rows; ++r)
+        {
+            for (int c = 0; c < cols; ++c)
+            {
+                out.at(r, c) = op(at(r, c), o.at(r, c));
+            }
+        }
+        return out;
+    }
+
     data_type data;
 };
 

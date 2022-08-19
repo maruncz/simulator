@@ -61,3 +61,16 @@ static void matrix_add(benchmark::State &state)
 }
 
 BENCHMARK(matrix_add);
+
+static void matrix_add_alg(benchmark::State &state)
+{
+    simulator::algebra::mat<float, 10, 10> start;
+    benchmark::DoNotOptimize(start);
+    for (auto _ : state)
+    {
+        auto tmp = start.elementWiseBinaryOpAlg(start, std::plus<>{});
+        benchmark::DoNotOptimize(tmp);
+    }
+}
+
+BENCHMARK(matrix_add_alg);
