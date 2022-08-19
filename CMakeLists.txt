@@ -15,6 +15,3 @@ endif()
 if(${ENABLE_TESTS})
     add_subdirectory(tests)
 endif()
-
-add_executable(sim-test main.cpp)
-target_link_libraries(sim-test PRIVATE sim)
