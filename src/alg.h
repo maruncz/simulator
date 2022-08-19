@@ -4,6 +4,7 @@
 #include "base.h"
 #include <algorithm>
 #include <array>
+#include <cassert>
 #include <cmath>
 #include <iostream>
 
@@ -13,27 +14,16 @@ namespace simulator
 namespace algebra
 {
 
-template<real T, uint8_t rows, uint8_t cols> struct mat
+template<real T, uint8_t rows, uint8_t cols> class mat
 {
+public:
     using row_type  = std::array<T, cols>;
     using col_type  = std::array<T, rows>;
-    using data_type = std::array<row_type, rows>;
+    using data_type = std::array<T, rows * cols>;
 
-    constexpr mat()
-    {
-        for (auto &r : data)
-        {
-            r.fill(0);
-        }
-    }
+    constexpr mat() { data.fill(0); }
 
-    constexpr mat(T value)
-    {
-        for (auto &r : data)
-        {
-            r.fill(value);
-        }
-    }
+    constexpr mat(T value) { data.fill(value); }
 
     constexpr mat(data_type idata) : data(idata) {}
 
@@ -42,7 +32,7 @@ template<real T, uint8_t rows, uint8_t cols> struct mat
         mat out;
         for (int i = 0; i < rows; ++i)
         {
-            out.data[i][i] = T(1);
+            out.at(i, i) = T(1);
         }
         return out;
     }
@@ -50,17 +40,14 @@ template<real T, uint8_t rows, uint8_t cols> struct mat
     constexpr static mat row(row_type irow) requires(rows == 1)
     {
         mat out;
-        out.data[0] = irow;
+        out.data = irow;
         return out;
     }
 
     constexpr static mat col(col_type icol) requires(cols == 1)
     {
         mat out;
-        for (int r = 0; r < rows; ++r)
-        {
-            out.data[r][0] = icol[r];
-        }
+        out.data = icol;
         return out;
     }
 
@@ -71,14 +58,15 @@ template<real T, uint8_t rows, uint8_t cols> struct mat
         {
             for (int c = 0; c < cols; ++c)
             {
-                out.data[c][r] = data[r][c];
+                out.at(c, r) = at(r, c);
             }
         }
         return out;
     }
 
     template<uint8_t irows, uint8_t icols>
-    auto operator*(mat<T, irows, icols> imat) const requires(cols == irows)
+    auto operator*(const mat<T, irows, icols> &imat) const
+        requires(cols == irows)
     {
         mat<T, rows, icols> out;
         for (int r = 0; r < rows; ++r)
@@ -87,34 +75,34 @@ template<real T, uint8_t rows, uint8_t cols> struct mat
             {
                 for (int i = 0; i < cols; ++i)
                 {
-                    out.data[r][c] += data[r][i] * imat.data[i][c];
+                    out.at(r, c) += at(r, i) * imat.at(i, c);
                 }
             }
         }
         return out;
     }
 
-    mat operator+(mat o) const
+    mat operator+(const mat &o) const
     {
         mat out;
         for (int r = 0; r < rows; ++r)
         {
             for (int c = 0; c < cols; ++c)
             {
-                out.data[r][c] = data[r][c] + o.data[r][c];
+                out.at(r, c) = at(r, c) + o.at(r, c);
             }
         }
         return out;
     }
 
-    mat operator-(mat o) const
+    mat operator-(const mat &o) const
     {
         mat out;
         for (int r = 0; r < rows; ++r)
         {
             for (int c = 0; c < cols; ++c)
             {
-                out.data[r][c] = data[r][c] - o.data[r][c];
+                out.at(r, c) = at(r, c) - o.at(r, c);
             }
         }
         return out;
@@ -127,7 +115,7 @@ template<real T, uint8_t rows, uint8_t cols> struct mat
         {
             for (int c = 0; c < cols; ++c)
             {
-                out += data[r][c] * data[r][c];
+                out += at(r, c) * at(r, c);
             }
         }
         return std::sqrt(out);
@@ -140,7 +128,7 @@ template<real T, uint8_t rows, uint8_t cols> struct mat
         {
             for (int c = 0; c < cols; ++c)
             {
-                output << in.data[r][c];
+                output << in.at(r, c);
                 if (c < (cols - 1))
                 {
                     output << ' ';
@@ -156,6 +144,19 @@ template<real T, uint8_t rows, uint8_t cols> struct mat
         return output;
     }
 
+    const T &at(uint8_t row, uint8_t col) const
+    {
+        assert(row < rows);
+        assert(col < cols);
+        return data[row * cols + col];
+    }
+
+    T &at(uint8_t row, uint8_t col)
+    {
+        return const_cast<T &>(const_cast<const mat *>(this)->at(row, col));
+    }
+
+private:
     data_type data;
 };
 

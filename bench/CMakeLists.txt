@@ -15,3 +15,6 @@ find_package(TBB REQUIRED)
 
 add_executable(sim-bench bench.cpp)
 target_link_libraries(sim-bench PRIVATE benchmark::benchmark_main sim)
+
+add_executable(matrix-bench matrix_bench.cpp)
+target_link_libraries(matrix-bench PRIVATE benchmark::benchmark_main sim)
