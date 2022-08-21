@@ -245,23 +245,3 @@ INSTANTIATE_TEST_SUITE_P(
                                    16.88194301613413),
                     std::make_pair(simulator::algebra::mat<float, 3, 3>::eye(),
                                    1.732050807568877)));
-
-TEST(matrix, DISABLED_norm)
-{
-    constexpr float err{10e-10};
-    simulator::algebra::mat<float, 3, 3> A({1, 2, 3, 4, 5, 6, 7, 8, 9});
-    auto B = simulator::algebra::mat<float, 1, 3>::row({1, 2, 3});
-    auto C = simulator::algebra::mat<float, 3, 1>::col({1, 2, 3});
-
-    {
-        EXPECT_NEAR(A.norm(), 16.88194301613413, err);
-    }
-
-    {
-        EXPECT_NEAR(B.norm(), 3.741657386773941, err);
-    }
-
-    {
-        EXPECT_NEAR(C.norm(), 3.741657386773941, err);
-    }
-}
